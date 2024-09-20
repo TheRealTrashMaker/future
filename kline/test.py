@@ -1,12 +1,16 @@
-import requests
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
+
+import requests
+
 from kliner import KlineService
+
 
 # 获取所有期货的名称
 def get_all_futures():
     response = requests.get('http://127.0.0.1:5626/future/futures')
     return response.json()
+
 
 # 获取单个期货的K线信息并存储
 def fetch_single_kline_data(future_code, ks):
@@ -14,10 +18,11 @@ def fetch_single_kline_data(future_code, ks):
         # 获取该期货的1分钟K线信息
         kline_info = requests.get(f'http://127.0.0.1:5626/future/kline_1m/{future_code}').json()
         # 使用KlineService存储K线信息
-        ks.save_klines(klines=kline_info, prex='future', cycle='1分钟', code=future_code)
+        ks.save_klines(klines=kline_info, prex='trade', cycle='1分钟', code=future_code)
         print(f"{future_code} 数据已保存")
     except Exception as e:
         print(f"获取 {future_code} 数据失败: {e}")
+
 
 # 并发获取所有期货的K线数据1
 def fetch_all_kline_data(ks):
@@ -36,13 +41,15 @@ def fetch_all_kline_data(ks):
             except Exception as exc:
                 print(f'{future_code} 生成时出现异常: {exc}')
 
+
 if __name__ == '__main__':
     ks = KlineService()
 
     try:
         while True:
-            fetch_single_kline_data(future_code="PR2507",ks=ks)
+            fetch_single_kline_data(future_code="PR2507", ks=ks)
             time.sleep(1)
+            print("正在更新数据...", time.time())
             # 设置更新间隔，这里是1秒
     except KeyboardInterrupt:
         print("程序终止")
