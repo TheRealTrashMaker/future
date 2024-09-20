@@ -63,6 +63,7 @@ class KlineService:
     def save_klines(self, klines, prex='trade', cycle=None, code=None):
         # 存储多个 K线
         self.redis.delete(f"{prex}_kline_{code}_{cycle}")
+        klines = sorted(klines, key=lambda x: x['Tick'])
         for kline in klines:
             new_kline = {
                 'open': kline['O'],
