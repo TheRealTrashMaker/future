@@ -41,7 +41,8 @@ if __name__ == '__main__':
 
     try:
         while True:
-            fetch_all_kline_data(ks)
+            fetch_single_kline_data(future_code="PR2507",ks=ks)
+            time.sleep(1)
             # 设置更新间隔，这里是1秒
     except KeyboardInterrupt:
         print("程序终止")
