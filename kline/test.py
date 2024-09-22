@@ -108,17 +108,17 @@ def get_all_ticket():
         clean_futures = unclean_futures.split("\nvar")[i].split('"')[1].split(",")
         try:
             return_pre_data = {
-                "ask": float(clean_futures[6]),
-                "asm": float(clean_futures[12]),
-                "bid": float(clean_futures[7]),
-                "bim": float(clean_futures[11]),
-                "open": float(clean_futures[2]),
-                "close": float(clean_futures[10]),
+                "B1": float(clean_futures[6]),
+                "B1V": float(clean_futures[12]),
+                "S1": float(clean_futures[7]),
+                "S1V": float(clean_futures[11]),
+                "O": float(clean_futures[2]),
+                "YC": float(clean_futures[10]),
                 "nv": float(clean_futures[14]),
-                "high": float(clean_futures[3]),
-                "low": float(clean_futures[4]),
+                "H": float(clean_futures[3]),
+                "L": float(clean_futures[4]),
                 "wave": float(str(round(((float(clean_futures[8]) - float(clean_futures[10])) / float(clean_futures[10])) * 100, 2))),
-                "price": float(clean_futures[5]),
+                "P": float(clean_futures[5]),
                 "volume": float(clean_futures[14]),
                 "position": float(clean_futures[14]),
                 "digit": 4,
@@ -130,7 +130,31 @@ def get_all_ticket():
             pass
     return return_data
 
+"""
+                                    $ticket['ask'] = $symbol['B1'];
+                                    $ticket['asm'] = $symbol['B1V'];
+                                    $ticket['bid'] = $symbol['S1'];
+                                    $ticket['bim'] = $symbol['S1V'];
+                                    $ticket['open'] = $symbol['O'];
+                                    $ticket['close'] = $symbol['YC'];
+                                    $ticket['high'] = $symbol['H'];
+                                    $ticket['low'] = $symbol['L'];
 
+                                    $ticket['price'] = $symbol['P'];
+                                    $ticket['volume'] = $symbol['B1V']+$symbol['S1V'];
+                                    $ticket['position'] = $symbol['HD'];
+                                    $ticket['limit_up'] = 0;
+                                    $ticket['limit_dn'] = 0;
+                                    $ticket['cleaning'] = 0;
+                                    $ticket['close_past'] = $symbol['YC'];//昨收
+                                    $ticket['position_past'] = $symbol['YJS'];//昨持
+                                    $ticket['cleaning_past'] = $symbol['YHD'];//昨结
+
+                                    $ticket['tm'] = $symbol['Tick'];
+                                    $ticket['ctm'] = $symbol['Tick'];
+                                    $ticket['ctmfmt'] = date('Y-m-d H:i:s', $symbol['Tick']);
+                                    $ticket['wave'] = $symbol['ZF'];
+                                    $tmpModelList[$symbol['FS']]['ticekt'] = $ticket;"""
 def fetch_all_ticket_data(ks):
     try:
         # prex='tf_futures_trade'
