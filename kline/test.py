@@ -138,7 +138,8 @@ def fetch_all_ticket_data(ks):
         # 使用KlineService存储K线信息
         for ticket in all_tickets:
             try:
-                ks.save_ticket(ticket=ticket, prex='tf_futures_trade')
+                #, prex='tf_futures_trade'
+                ks.save_ticket(ticket=ticket)
             except Exception as e:
                 print(f"保存ticket 数据失败: {e}")
         print(f"所有ticket 数据已保存")
