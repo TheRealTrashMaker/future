@@ -48,16 +48,16 @@ class KlineService:
 
     def save_ticket(self, ticket, prex='trade'):
         # 存储票据
-        existing_ticket = self.redis.hget(f"{prex}_ticket", ticket['code'])
+        existing_ticket = self.redis.hget(f"{prex}_ticket", ticket["ticket"]['code'])
         if not existing_ticket:
-            return self.redis.hset(f"{prex}_ticket", ticket['code'], json.dumps(ticket))
+            return self.redis.hset(f"{prex}_ticket", ticket["ticket"]['code'], json.dumps(ticket))
         else:
             existing_ticket = json.loads(existing_ticket)
-            self.redis.hset(f"{prex}_ticket", ticket['code'], json.dumps(ticket))
-            if (existing_ticket['price'] == ticket['price'] and
-                    existing_ticket['ask'] == ticket['ask'] and
-                    existing_ticket['bid'] == ticket['bid']):
-                return False
+            self.redis.hset(f"{prex}_ticket", ticket["ticket"]['code'], json.dumps(ticket))
+            # if (existing_ticket["ticket"]['price'] == ticket["ticket"]['price'] and
+            #         existing_ticket["ticket"]['ask'] == ticket["ticket"]['ask'] and
+            #         existing_ticket["ticket"]['bid'] == ticket["ticket"]['bid']):
+            #     return False
             return True
 #git pull https://github.com/TheRealTrashMaker/future.git
     def save_klines(self, klines, prex='trade', cycle=None, code=None):
