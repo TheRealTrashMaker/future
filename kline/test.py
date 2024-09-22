@@ -108,17 +108,17 @@ def get_all_ticket():
         clean_futures = unclean_futures.split("\nvar")[i].split('"')[1].split(",")
         try:
             return_pre_data = {
-                "B1": float(clean_futures[6]),
-                "B1V": float(clean_futures[12]),
-                "S1": float(clean_futures[7]),
-                "S1V": float(clean_futures[11]),
-                "O": float(clean_futures[2]),
-                "YC": float(clean_futures[10]),
+                "ask": float(clean_futures[6]),
+                "asm": float(clean_futures[12]),
+                "bid": float(clean_futures[7]),
+                "bim": float(clean_futures[11]),
+                "open": float(clean_futures[2]),
+                "close": float(clean_futures[10]),
                 "nv": float(clean_futures[14]),
-                "H": float(clean_futures[3]),
-                "L": float(clean_futures[4]),
+                "high": float(clean_futures[3]),
+                "low": float(clean_futures[4]),
                 "wave": float(str(round(((float(clean_futures[8]) - float(clean_futures[10])) / float(clean_futures[10])) * 100, 2))),
-                "P": float(clean_futures[5]),
+                "price": float(clean_futures[5]),
                 "volume": float(clean_futures[14]),
                 "position": float(clean_futures[14]),
                 "digit": 4,
@@ -131,10 +131,26 @@ def get_all_ticket():
     return return_data
 
 """
-                                    $ticket['ask'] = $symbol['B1'];
+$ticket['ask'] = $symbol['B1'];
                                     $ticket['asm'] = $symbol['B1V'];
+                                    $ticket['ask2'] = $symbol['B2'];
+                                    $ticket['asm2'] = $symbol['B2V'];
+                                    $ticket['ask3'] = $symbol['B3'];
+                                    $ticket['asm3'] = $symbol['B3V'];
+                                    $ticket['ask4'] = $symbol['B4'];
+                                    $ticket['asm4'] = $symbol['B4V'];
+                                    $ticket['ask5'] = $symbol['B5'];
+                                    $ticket['asm5'] = $symbol['B5V'];
                                     $ticket['bid'] = $symbol['S1'];
                                     $ticket['bim'] = $symbol['S1V'];
+                                    $ticket['bid2'] = $symbol['S2'];
+                                    $ticket['bim2'] = $symbol['S2V'];
+                                    $ticket['bid3'] = $symbol['S3'];
+                                    $ticket['bim3'] = $symbol['S3V'];
+                                    $ticket['bid4'] = $symbol['S4'];
+                                    $ticket['bim4'] = $symbol['S4V'];
+                                    $ticket['bid5'] = $symbol['S5'];
+                                    $ticket['bim5'] = $symbol['S5V'];
                                     $ticket['open'] = $symbol['O'];
                                     $ticket['close'] = $symbol['YC'];
                                     $ticket['high'] = $symbol['H'];
