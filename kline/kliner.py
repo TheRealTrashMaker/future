@@ -39,8 +39,7 @@ class KlineService:
                 return json.loads(self.redis.hget(f"{prex}_ticket", code))
         else:
             if self.redis.exists(f"{prex}_ticket"):
-                data = self.redis.hgetall(f"{prex}_ticket")
-                return_data = [{key: value} for key, value in data.items()]
+                return_data = [{k: v} for k, v in self.redis.hgetall(f"{prex}_ticket").items()]
                 return return_data
         return {}
 
