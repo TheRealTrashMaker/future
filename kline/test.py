@@ -139,7 +139,7 @@ def fetch_all_ticket_data(ks):
         for ticket in all_tickets:
             try:
                 #, prex='tf_futures_trade'
-                ks.save_ticket(ticket=ticket)
+                ks.save_ticket(ticket=ticket, prex="rf_addon_tf_futures_symbol")
 
             except Exception as e:
                 print(f"保存ticket 数据失败: {e}")
