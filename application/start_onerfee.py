@@ -1,7 +1,5 @@
 import asyncio
 import datetime
-from your_database_module import Database
-from your_models import Order, Symbol, Member, MemberLever
 import mysql.connector
 from mysql.connector import Error
 

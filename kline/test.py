@@ -2,6 +2,9 @@ import json
 import os
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
+from datetime import timedelta
+from decimal import Decimal
+
 from kliner import KlineService
 import requests
 from database import mysql_conn
@@ -66,13 +69,38 @@ def get_futures_prices():
         "sec-ch-ua-platform": "\"Windows\""
     }
     futures = get_all_futures()
-    # print(futures)
     futures_list_str = ""
     for item in futures:
         futures_list_str = futures_list_str + "nf_" + item["symbol"] + ","
     url = f"https://hq.sinajs.cn/rn={time.time() * 1000}&list={futures_list_str}"
     response = requests.get(url, headers=headers)
     return response.text
+
+def convert_timedelta_to_serializable(data):
+    if isinstance(data, dict):
+        return {key: convert_timedelta_to_serializable(value) for key, value in data.items()}
+    elif isinstance(data, list):
+        return [convert_timedelta_to_serializable(item) for item in data]
+    elif isinstance(data, timedelta):
+        return data.total_seconds()  # 转换为秒数
+    else:
+        return data
+
+
+# 递归函数遍历字典或列表，将 Decimal 转换为 float
+def convert_decimal_to_float(data):
+    if isinstance(data, dict):
+        # 遍历字典中的每一对键值
+        return {key: convert_decimal_to_float(value) for key, value in data.items()}
+    elif isinstance(data, list):
+        # 如果是列表，遍历列表中的每一项
+        return [convert_decimal_to_float(item) for item in data]
+    elif isinstance(data, Decimal):
+        # 如果是 Decimal 类型，转换为 float
+        return float(data)
+    else:
+        # 如果是其他类型，保持不变
+        return data
 
 
 def get_all_ticket():
@@ -109,9 +137,10 @@ def get_all_ticket():
     return_data = []
     for i in range(len(all_futures)):
         clean_futures = unclean_futures.split("\nvar")[i].split('"')[1].split(",")
-        print(i)
         try:
-            tickets = mysqlconn.get_single_symbol_info(all_futures[i]["symbol"])
+
+
+            tickets = convert_timedelta_to_serializable(convert_decimal_to_float(mysqlconn.get_single_symbol_info(all_futures[i]["symbol"])))
             return_pre_data = {
                 "ask": float(clean_futures[6]),
                 "asm": float(clean_futures[12]),
@@ -135,7 +164,8 @@ def get_all_ticket():
         except:
             # print(unclean_futures.split("\nvar")[i])
             pass
-    return return_data
+
+        return return_data
 
 """
 $ticket['ask'] = $symbol['B1'];
@@ -180,12 +210,12 @@ $ticket['ask'] = $symbol['B1'];
                                     $tmpModelList[$symbol['FS']]['ticekt'] = $ticket;"""
 def fetch_all_ticket_data(ks):
     try:
-        # prex='tf_futures_trade'
         all_tickets = get_all_ticket()
         # 使用KlineService存储K线信息
         for ticket in all_tickets:
             try:
-                #, prex='tf_futures_trade'
+                # , prex='tf_futures_trade'
+                print(ticket)
                 ks.save_ticket(ticket=ticket, prex="trade")
 
             except Exception as e:

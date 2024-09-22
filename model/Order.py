@@ -4,7 +4,6 @@ from sqlalchemy import (
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 from datetime import datetime
-from your_kline_service import KlineService  # Adjust to your actual import
 
 Base = declarative_base()
 
