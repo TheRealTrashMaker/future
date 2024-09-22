@@ -16,7 +16,7 @@ async def send_data(websocket, path):
     # 等待接收客户端发送的消息
     message = await websocket.recv()
     # 判断是否是指定的消息
-    if message == "bind_tf_futures_trade":
+    if "bind_tf_futures_trade" in str(message):
         # 循环发送数据
         while True:
             # 这里可以替换为你想要发送的数据
