@@ -140,6 +140,7 @@ def fetch_all_ticket_data(ks):
             try:
                 #, prex='tf_futures_trade'
                 ks.save_ticket(ticket=ticket, prex='tf_futures_trade')
+
             except Exception as e:
                 print(f"保存ticket 数据失败: {e}")
         print(f"所有ticket 数据已保存")
