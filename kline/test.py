@@ -108,7 +108,6 @@ def get_all_ticket():
         clean_futures = unclean_futures.split("\nvar")[i].split('"')[1].split(",")
         try:
             return_pre_data = {
-                "code": all_futures[i]["symbol"],
                 "ask": float(clean_futures[6]),
                 "asm": float(clean_futures[12]),
                 "bid": float(clean_futures[7]),
@@ -122,7 +121,8 @@ def get_all_ticket():
                 "price": float(clean_futures[5]),
                 "volume": float(clean_futures[14]),
                 "position": float(clean_futures[14]),
-                "digit": 4
+                "digit": 4,
+                "code": all_futures[i]["symbol"]
             }
             return_data.append(return_pre_data)
         except:
