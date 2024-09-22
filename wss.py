@@ -1,7 +1,7 @@
 import asyncio
 import websockets
 import json
-from future.kline.kliner import KlineService
+from kline.kliner import KlineService
 
 
 def get_tickets():
