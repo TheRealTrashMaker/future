@@ -4,6 +4,8 @@ import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from kliner import KlineService
 import requests
+from future.application.database import mysql_conn
+
 
 
 # 获取所有期货的名称
@@ -103,11 +105,14 @@ def get_all_ticket():
     '''
     unclean_futures = get_futures_prices()
     all_futures = get_all_futures()
+    mysqlconn = mysql_conn()
     return_data = []
     for i in range(len(all_futures)):
         clean_futures = unclean_futures.split("\nvar")[i].split('"')[1].split(",")
+        print(i)
         try:
-            return_pre_data = {"ticket":{
+            tickets = mysqlconn.get_single_symbol_info(all_futures[i]["symbol"])
+            return_pre_data = {
                 "ask": float(clean_futures[6]),
                 "asm": float(clean_futures[12]),
                 "bid": float(clean_futures[7]),
@@ -118,14 +123,15 @@ def get_all_ticket():
                 "high": float(clean_futures[3]),
                 "low": float(clean_futures[4]),
                 "wave": float(str(round(((float(clean_futures[8]) - float(clean_futures[10])) / float(clean_futures[10])) * 100, 2))),
-                "P": float(clean_futures[5]),
+                "price": float(clean_futures[5]),
                 "volume": float(clean_futures[14]),
                 "position": float(clean_futures[14]),
                 "digit": 4,
                 "code": all_futures[i]["symbol"],
                 "code2": all_futures[i]["symbol"]
-            }}
-            return_data.append(return_pre_data)
+            }
+            tickets["ticket"] = return_pre_data
+            return_data.append(tickets)
         except:
             # print(unclean_futures.split("\nvar")[i])
             pass
