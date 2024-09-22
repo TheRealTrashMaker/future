@@ -133,14 +133,14 @@ def get_all_ticket():
     '''
     unclean_futures = get_futures_prices()
     all_futures = get_all_futures()
-    mysqlconn = mysql_conn()
+    # mysqlconn = mysql_conn()
     return_data = []
     for i in range(len(all_futures)):
         clean_futures = unclean_futures.split("\nvar")[i].split('"')[1].split(",")
         try:
 
 
-            tickets = convert_timedelta_to_serializable(convert_decimal_to_float(mysqlconn.get_single_symbol_info(all_futures[i]["symbol"])))
+            # tickets = convert_timedelta_to_serializable(convert_decimal_to_float(mysqlconn.get_single_symbol_info(all_futures[i]["symbol"])))
             return_pre_data = {
                 "ask": float(clean_futures[6]),
                 "asm": float(clean_futures[12]),
@@ -159,8 +159,8 @@ def get_all_ticket():
                 "code": all_futures[i]["symbol"],
                 "code2": all_futures[i]["symbol"]
             }
-            tickets["ticket"] = return_pre_data
-            return_data.append(tickets)
+            # tickets["ticket"] = return_pre_data
+            return_data.append(return_pre_data)
         except:
             # print(unclean_futures.split("\nvar")[i])
             pass
