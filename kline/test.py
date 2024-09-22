@@ -165,7 +165,7 @@ def get_all_ticket():
             # print(unclean_futures.split("\nvar")[i])
             pass
 
-        return return_data
+    return return_data
 
 """
 $ticket['ask'] = $symbol['B1'];
