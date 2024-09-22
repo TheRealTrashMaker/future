@@ -15,13 +15,11 @@ async def send_data(websocket, path):
     message = await websocket.recv()
     # 判断是否是指定的消息
     if "bind_tf_futures_trade" in str(message):
-        tickets = get_tickets()
         # 循环发送数据
         while True:
             # 这里可以替换为你想要发送的数据
-            for i in tickets:
-                data = {"event": "ticket", "data": i}
-                await websocket.send(json.dumps(data))
+            data = {"event": "ticket", "data": get_tickets()}
+            await websocket.send(json.dumps(data))
             await asyncio.sleep(1)  # 每秒发送一次
 
 if __name__ == '__main__':
