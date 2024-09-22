@@ -20,7 +20,7 @@ async def send_data(websocket, path):
         # 循环发送数据
         while True:
             # 这里可以替换为你想要发送的数据
-            data = ks.load_ticket()
+            data = {"data":ks.load_ticket()}
             await websocket.send(json.dumps(data))
             await asyncio.sleep(1)  # 每秒发送一次
 
