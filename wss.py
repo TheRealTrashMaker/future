@@ -6,7 +6,7 @@ from kline.kliner import KlineService
 
 def get_tickets():
     ks = KlineService()
-    tikcets = ks.load_ticket(code="CU2411")
+    tikcets = ks.load_ticket()
     return tikcets
 
 async def send_data(websocket, path):

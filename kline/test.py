@@ -215,7 +215,6 @@ def fetch_all_ticket_data(ks):
         for ticket in all_tickets:
             try:
                 # , prex='tf_futures_trade'
-                print(ticket)
                 ks.save_ticket(ticket=ticket, prex="trade")
 
             except Exception as e:
