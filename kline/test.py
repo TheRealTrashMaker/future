@@ -4,7 +4,7 @@ import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from kliner import KlineService
 import requests
-from future.application.database import mysql_conn
+from database import mysql_conn
 
 
 
