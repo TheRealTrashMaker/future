@@ -7,9 +7,7 @@ from kline.kliner import KlineService
 def get_tickets():
     ks = KlineService()
     tikcets = ks.load_ticket()
-    print(tikcets)
-
-
+    return tikcets
 
 async def send_data(websocket, path):
     ks = KlineService()
@@ -20,7 +18,7 @@ async def send_data(websocket, path):
         # 循环发送数据
         while True:
             # 这里可以替换为你想要发送的数据
-            data = ks.load_ticket()
+            data = get_tickets()
             await websocket.send(json.dumps(data))
             await asyncio.sleep(1)  # 每秒发送一次
 
