@@ -109,19 +109,19 @@ def get_all_ticket():
         try:
             return_pre_data = {
                 "code": all_futures[i]["symbol"],
-                "ask": clean_futures[6],
-                "asm": clean_futures[12],
-                "bid": clean_futures[7],
-                "bim": clean_futures[11],
-                "open": clean_futures[2],
-                "close": clean_futures[10],
-                "nv": clean_futures[14],
-                "high": clean_futures[3],
-                "low": clean_futures[4],
-                "wave": str(round(((float(clean_futures[8]) - float(clean_futures[10])) / float(clean_futures[10])) * 100, 2)),
-                "price": clean_futures[5],
-                "volume": clean_futures[14],
-                "position": clean_futures[14],
+                "ask": float(clean_futures[6]),
+                "asm": float(clean_futures[12]),
+                "bid": float(clean_futures[7]),
+                "bim": float(clean_futures[11]),
+                "open": float(clean_futures[2]),
+                "close": float(clean_futures[10]),
+                "nv": float(clean_futures[14]),
+                "high": float(clean_futures[3]),
+                "low": float(clean_futures[4]),
+                "wave": float(str(round(((float(clean_futures[8]) - float(clean_futures[10])) / float(clean_futures[10])) * 100, 2))),
+                "price": float(clean_futures[5]),
+                "volume": float(clean_futures[14]),
+                "position": float(clean_futures[14]),
                 "digit": 4
             }
             return_data.append(return_pre_data)
@@ -139,7 +139,7 @@ def fetch_all_ticket_data(ks):
         for ticket in all_tickets:
             try:
                 #, prex='tf_futures_trade'
-                ks.save_ticket(ticket=ticket)
+                ks.save_ticket(ticket=ticket, prex='tf_futures_trade')
             except Exception as e:
                 print(f"保存ticket 数据失败: {e}")
         print(f"所有ticket 数据已保存")
