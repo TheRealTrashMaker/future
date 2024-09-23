@@ -5,10 +5,9 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import timedelta
 from decimal import Decimal
 
-from kliner import KlineService
 import requests
-from database import mysql_conn
 
+from kliner import KlineService
 
 
 # 获取所有期货的名称
@@ -28,6 +27,7 @@ def fetch_single_kline_data(future_code, ks):
         # 获取该期货的1分钟K线信息
         kline_info = requests.get(f'http://127.0.0.1:5626/future/kline_1m/{future_code}').json()
         # 使用KlineService存储K线信息
+        print(future_code)
         ks.save_klines(klines=kline_info, prex='tf_futures_trade', cycle=1, code=future_code)
         print(f"{future_code} 数据已保存")
     except Exception as e:
@@ -75,6 +75,7 @@ def get_futures_prices():
     url = f"https://hq.sinajs.cn/rn={time.time() * 1000}&list={futures_list_str}"
     response = requests.get(url, headers=headers)
     return response.text
+
 
 def convert_timedelta_to_serializable(data):
     if isinstance(data, dict):
@@ -139,7 +140,6 @@ def get_all_ticket():
         clean_futures = unclean_futures.split("\nvar")[i].split('"')[1].split(",")
         try:
 
-
             # tickets = convert_timedelta_to_serializable(convert_decimal_to_float(mysqlconn.get_single_symbol_info(all_futures[i]["symbol"])))
             return_pre_data = {
                 "ask": float(clean_futures[6]),
@@ -166,6 +166,7 @@ def get_all_ticket():
             pass
 
     return return_data
+
 
 """
 $ticket['ask'] = $symbol['B1'];
@@ -208,6 +209,8 @@ $ticket['ask'] = $symbol['B1'];
                                     $ticket['ctmfmt'] = date('Y-m-d H:i:s', $symbol['Tick']);
                                     $ticket['wave'] = $symbol['ZF'];
                                     $tmpModelList[$symbol['FS']]['ticekt'] = $ticket;"""
+
+
 def fetch_all_ticket_data(ks):
     try:
         all_tickets = get_all_ticket()
@@ -223,12 +226,24 @@ def fetch_all_ticket_data(ks):
     except Exception as e:
         print(f"保存ticket 数据失败: {e}")
 
+
+def save_kline_data_by_redis(kline_type=1, prex='tf_futures_trade', ks=None):
+    keys = ks.match_search_keys()
+    for key in keys:
+        try:
+            fetch_single_kline_data(future_code=key.split("_")[2], ks=ks)
+        except Exception as e:
+            print(f"保存kline 数据失败: {e}")
+    pass
+
+
 if __name__ == '__main__':
     ks = KlineService()
     # print(get_all_ticket())
     try:
         while True:
-            fetch_single_kline_data(future_code="PR2507", ks=ks)
+            save_kline_data_by_redis(kline_type=1, prex='tf_futures_trade', ks=ks)
+            # fetch_single_kline_data(future_code="PR2507", ks=ks)
             fetch_all_ticket_data(ks)
             time.sleep(1)
             print("正在更新数据...", time.time())
