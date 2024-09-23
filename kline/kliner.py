@@ -39,11 +39,11 @@ class KlineService:
                 return json.loads(self.redis.hget(f"{prex}_ticket", code))
         else:
             if self.redis.exists(f"{prex}_ticket"):
-                return_data = []
+                # return_data = []
                 unclean_data = self.redis.exists(f"{prex}_ticket")
-                for i in unclean_data:
-                    return_data.append(json.loads(i))
-                return return_data
+                # for i in unclean_data:
+                #     return_data.append(json.loads(i))
+                return unclean_data
         return {}
 
     def load_kline(self, code, kline_type, prex='trade', limit=500):
