@@ -69,17 +69,17 @@ class KlineService:
         self.redis.delete(f"{prex}_kline_{code}_{cycle}")
         klines = sorted(klines, key=lambda x: x['Tick'], reverse=True)
         for kline in klines:
-            new_kline = {
-                'open': kline['O'],
-                'high': kline['H'],
-                'close': kline['C'],
-                'low': kline['L'],
-                'wave': 0,
-                'volume': kline['V'],
-                'ctm': kline['Tick'],
-                'ctmfmt': datetime.fromtimestamp(int(kline['Tick'])).strftime('%Y-%m-%d %H:%M:%S')
-            }
-            self.redis.rpush(f"{prex}_kline_{code}_{cycle}", json.dumps(new_kline))
+            # new_kline = {
+            #     'open': kline['O'],
+            #     'high': kline['H'],
+            #     'close': kline['C'],
+            #     'low': kline['L'],
+            #     'wave': 0,
+            #     'volume': kline['V'],
+            #     'ctm': kline['Tick'],
+            #     'ctmfmt': datetime.fromtimestamp(int(kline['Tick'])).strftime('%Y-%m-%d %H:%M:%S')
+            # }
+            self.redis.rpush(f"{prex}_kline_{code}_{cycle}", json.dumps(kline))
 
         print(f"{code}***{cycle}线完成")
 
