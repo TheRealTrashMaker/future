@@ -33,7 +33,7 @@ async def send_data(websocket, path):
         while True:
             # 这里可以替换为你想要发送的数据
             # for i in codes:
-                data = {"event": "ticket", "data": re_data}
+                data = {"event": "tickets", "data": re_data}
                 await websocket.send(json.dumps(data))
                 await asyncio.sleep(1)
             # await asyncio.sleep(1)  # 每秒发送一次
