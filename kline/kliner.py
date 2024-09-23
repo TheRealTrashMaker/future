@@ -63,9 +63,12 @@ class KlineService:
             #         existing_ticket["ticket"]['bid'] == ticket["ticket"]['bid']):
             #     return False
             return True
-#git pull https://github.com/TheRealTrashMaker/future.git
+
+
+#  git pull https://github.com/TheRealTrashMaker/future.git
     def save_klines(self, klines, prex='trade', cycle=None, code=None):
-        # 存储多个 K线
+        #  存储多个 K线
+
         self.redis.delete(f"{prex}_kline_{code}_{cycle}")
         klines = sorted(klines, key=lambda x: x['ctm'], reverse=True)  # 按时间降序排列
         for kline in klines:
@@ -74,7 +77,7 @@ class KlineService:
         print(f"{code}***{cycle}线完成")
 
     def save_kline(self, ticket, prex='trade', is_ask=True):
-        # 存储单条 K线
+        #  存储单条 K线
         for cycle in self.cycles:
             kline_data = self.redis.lrange(f"{prex}_kline_{ticket['code']}_{cycle}", 0, 0)
             if kline_data:
