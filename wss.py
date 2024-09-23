@@ -33,6 +33,7 @@ async def send_data(websocket, path):
             for i in codes:
                 data = {"event": "ticket", "data": get_tickets(code=i["symbol"])}
                 await websocket.send(json.dumps(data))
+                await asyncio.sleep(1)
             await asyncio.sleep(1)  # 每秒发送一次
 
 if __name__ == '__main__':
