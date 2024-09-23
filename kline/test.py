@@ -75,7 +75,7 @@ def fetch_single_kline_data(kline_type,future_code, ks):
         # 获取该期货的1分钟K线信息
         kline_info = get_kline_by_minutes(symbol=future_code, minutes=kline_type)
         # 使用KlineService存储K线信息
-        ks.save_klines(klines=kline_info, prex='tf_futures_trade', cycle=1, code=future_code)
+        ks.save_klines(klines=kline_info, prex='tf_futures_trade', cycle=kline_type, code=future_code)
         print(f"{future_code} 数据已保存")
     except Exception as e:
         print(f"获取 {future_code} 数据失败: {e}")
