@@ -152,7 +152,7 @@ def get_all_ticket():
                 "high": float(clean_futures[3]),
                 "low": float(clean_futures[4]),
                 "wave": float(str(round(((float(clean_futures[8]) - float(clean_futures[10])) / float(clean_futures[10])) * 100, 2))),
-                "price": float(clean_futures[5]),
+                "price": float(clean_futures[8]),
                 "volume": float(clean_futures[14]),
                 "position": float(clean_futures[14]),
                 "digit": 4,
