@@ -40,7 +40,7 @@ class KlineService:
         else:
             if self.redis.exists(f"{prex}_ticket"):
                 # return_data = []
-                unclean_data = self.redis.exists(f"{prex}_ticket")
+                unclean_data = self.redis.hgetall(f"{prex}_ticket")
                 # for i in unclean_data:
                 #     return_data.append(json.loads(i))
                 return unclean_data
