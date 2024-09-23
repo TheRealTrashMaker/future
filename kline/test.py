@@ -10481,7 +10481,6 @@ if __name__ == '__main__':
     # print(get_all_ticket())
     try:
         while True:
-            write_ready_data(ks)
             save_kline_data_by_redis(kline_type=1, prex='tf_futures_trade', ks=ks)
             # fetch_single_kline_data(future_code="PR2507", ks=ks)
             fetch_all_ticket_data(ks)
