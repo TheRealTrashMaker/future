@@ -7,7 +7,7 @@ from decimal import Decimal
 
 import requests
 
-from future.kline.kliner import KlineService
+from .kliner import KlineService
 
 
 # 获取所有期货的名称
