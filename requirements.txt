@@ -1,7 +1,7 @@
-pytz==2024.1
-redis==3.5.3
-Requests==2.32.3
-SQLAlchemy==2.0.29
-websockets==10.4
-
-
+future
+mysql_connector_repackaged
+PyMySQL
+pytz
+redis
+Requests
+websockets

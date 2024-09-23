@@ -69,16 +69,6 @@ class KlineService:
         self.redis.delete(f"{prex}_kline_{code}_{cycle}")
         klines = sorted(klines, key=lambda x: x['ctm'], reverse=True)  # 按时间降序排列
         for kline in klines:
-            # new_kline = {
-            #     'open': kline['O'],
-            #     'high': kline['H'],
-            #     'close': kline['C'],
-            #     'low': kline['L'],
-            #     'wave': 0,
-            #     'volume': kline['V'],
-            #     'ctm': kline['Tick'],
-            #     'ctmfmt': datetime.fromtimestamp(int(kline['Tick'])).strftime('%Y-%m-%d %H:%M:%S')
-            # }
             self.redis.rpush(f"{prex}_kline_{code}_{cycle}", json.dumps(kline))
 
         print(f"{code}***{cycle}线完成")
@@ -132,9 +122,7 @@ class KlineService:
                     self.redis.ltrim(f"{prex}_kline_{ticket['code']}_{cycle}", 0, 499)  # 保留前500个元素
 
     def get_key(self, m, datetime_str, previous_key=False):
-        # 获取键的时间格式
         datetime_obj = datetime.strptime(datetime_str, '%Y-%m-%d %H:%M:%S')
-
         if isinstance(m, int):
             if m < 60:  # 处理分钟
                 if m == 1:
@@ -190,6 +178,10 @@ class KlineService:
             return (first_day_of_year - timedelta(days=first_day_of_year.day)).strftime('%Y-%m-%d') if previous_key else first_day_of_year.strftime('%Y-%m-%d')
 
     def match_search_keys(self):
+        """
+        匹配redis中需要请求k线的数据
+        :return:
+        """
         pattern = 'is_search*'
         keys_found = []  # 初始化一个列表来收集所有找到的键
         cursor = '0'
