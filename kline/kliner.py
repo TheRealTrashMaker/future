@@ -188,10 +188,12 @@ class KlineService:
         elif m == 'year':
             first_day_of_year = datetime_obj.replace(month=1, day=1)
             return (first_day_of_year - timedelta(days=first_day_of_year.day)).strftime('%Y-%m-%d') if previous_key else first_day_of_year.strftime('%Y-%m-%d')
+
     def match_search_keys(self):
         pattern = 'is_search*'
-        # 使用SCAN命令和MATCH选项迭代匹配特定模式的键
+        keys_found = []  # 初始化一个列表来收集所有找到的键
         cursor = '0'
         while cursor != 0:
             cursor, keys = self.redis.scan(cursor=cursor, match=pattern, count=100)
-            return keys
+            keys_found.extend(keys)  # 将找到的键添加到列表中
+        return keys_found  # 在迭代完成后返回所有找到的键
