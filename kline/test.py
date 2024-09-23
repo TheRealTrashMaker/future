@@ -10488,15 +10488,19 @@ def write_ready_data(ks):
 
 if __name__ == '__main__':
     ks = KlineService()
-    # print(get_all_ticket())
     try:
         while True:
-            save_kline_data_by_redis(kline_type=1, prex='tf_futures_trade', ks=ks)
-            # fetch_single_kline_data(future_code="PR2507", ks=ks)
+            keys = ks.match_search_keys()
+            for key in keys:
+                try:
+                    fetch_single_kline_data(future_code=key.split("_")[2], ks=ks)
+                except Exception as e:
+                    print(f"保存kline 数据失败: {e}")
+                print(f"保存kline 数据成功")
+                time.sleep(1)
             fetch_all_ticket_data(ks)
             time.sleep(1)
             print("正在更新数据...", time.time())
-            # 设置更新间隔，这里是1秒
         # write_ready_data(ks)
         # print("初始数据写入完成")
     except KeyboardInterrupt:
