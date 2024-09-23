@@ -233,6 +233,8 @@ def save_kline_data_by_redis(kline_type=1, prex='tf_futures_trade', ks=None):
             fetch_single_kline_data(future_code=key.split("_")[2], ks=ks)
         except Exception as e:
             print(f"保存kline 数据失败: {e}")
+        print(f"保存kline 数据成功")
+        time.sleep(1)
     pass
 
 def write_ready_data(ks):
