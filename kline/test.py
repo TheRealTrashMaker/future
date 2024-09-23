@@ -219,19 +219,19 @@ $ticket['ask'] = $symbol['B1'];
 
 
 def fetch_all_ticket_data(ks):
-    # try:
+    try:
         all_tickets = get_all_ticket()
         # 使用KlineService存储K线信息
         for ticket in all_tickets:
-            # try:
+            try:
                 # , prex='tf_futures_trade'
                 ks.save_ticket(ticket=ticket, prex="tf_futures_trade")
 
-            # except Exception as e:
-            #     print(f"保存ticket 数据失败: {e}")
+            except Exception as e:
+                print(f"保存ticket 数据失败: {e}")
         print(f"所有ticket 数据已保存")
-    # except Exception as e:
-    #     print(f"保存ticket 数据失败: {e}")
+    except Exception as e:
+        print(f"保存ticket 数据失败: {e}")
 
 
 def save_kline_data_by_redis(kline_type=1, prex='tf_futures_trade', ks=None):
