@@ -7,7 +7,7 @@ from decimal import Decimal
 
 import requests
 
-from kliner import KlineService
+from future.kline.kliner import KlineService
 
 
 # 获取所有期货的名称
@@ -27,7 +27,6 @@ def fetch_single_kline_data(future_code, ks):
         # 获取该期货的1分钟K线信息
         kline_info = requests.get(f'http://127.0.0.1:5626/future/kline_1m/{future_code}').json()
         # 使用KlineService存储K线信息
-        print(future_code)
         ks.save_klines(klines=kline_info, prex='tf_futures_trade', cycle=1, code=future_code)
         print(f"{future_code} 数据已保存")
     except Exception as e:
