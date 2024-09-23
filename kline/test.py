@@ -2,7 +2,7 @@ import json
 import os
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
-from datetime import timedelta
+from datetime import timedelta, datetime
 from decimal import Decimal
 
 import requests
@@ -126,7 +126,7 @@ def get_all_ticket():
     # }
 
     # 返回顺序（郑商 大商 上期 广期 普通期货） 0.名字 1.时分秒 2.开盘价  3.最高价  4.最低价  5.结算价 6.买价   7.卖价    8.最新价  9.不知道 10.昨结     11.买量, 12.卖量,     13.持仓量  14.成交量
-    # "                  PTA2501,225959,4850.000,4870.000,4778.000,4798.000,4798.000,4800.000,4798.000,4818.000,4862.000    ,92,       133,    1346345.000,455290
+    # "                                   PTA2501,225959,4850.000,4870.000,4778.000,4798.000,4798.000,4800.000,4798.000,4818.000,4862.000    ,92,       133,    1346345.000,455290
 
     # 返回顺序（中金 指数期货,国债期货） 0.开盘价     1.最高价      2.最低价    3.最新价     4.成交量   5.不知道        6.持仓量      7.最新价   8.不知道   9.不知道    10.不知道   11.       12.
     #                               ['3197.400', '3197.400', '3173.000', '3185.000', '28818', '91807601.000', '18462.000', '3185.000', '0.000', '3838.400', '2559.200', '0.000', '0.000', '3198.400', '3198.800', '40295.000', '3185.000', '156', '0.000', '0', '0.000', '0', '0.000', '0', '0.000', '0', '3185.200', '88', '0.000', '0', '0.000', '0', '0.000', '0', '0.000', '0', '2024-09-20', '15:00:00', '400', '0', '', '', '', '', '', '', '', '', '3185.773', '沪深300指数期货2409']
@@ -137,8 +137,14 @@ def get_all_ticket():
     return_data = []
     for i in range(len(all_futures)):
         clean_futures = unclean_futures.split("\nvar")[i].split('"')[1].split(",")
-        try:
 
+
+        try:
+            timer_date = unclean_futures.split("\nvar")[i].split('"')[1].split(",,,,,,,,,")[0].split(",")[-2]
+            timer_time = clean_futures[1]
+            fmt_time = f"{timer_date} {timer_time[0:2]}:{timer_time[2:4]}:{timer_time[4:6]}"
+            date_time = datetime.strptime(fmt_time, "%Y-%m-%d %H:%M:%S")
+            timestamp = int(time.mktime(date_time.timetuple()))
             # tickets = convert_timedelta_to_serializable(convert_decimal_to_float(mysqlconn.get_single_symbol_info(all_futures[i]["symbol"])))
             return_pre_data = {
                 "ask": float(clean_futures[6]),
@@ -153,10 +159,12 @@ def get_all_ticket():
                 "wave": float(str(round(((float(clean_futures[8]) - float(clean_futures[10])) / float(clean_futures[10])) * 100, 2))),
                 "price": float(clean_futures[8]),
                 "volume": float(clean_futures[14]),
-                "position": float(clean_futures[14]),
+                "position": float(clean_futures[9]),
                 "digit": 4,
                 "code": all_futures[i]["symbol"],
-                "code2": all_futures[i]["symbol"]
+                "code2": all_futures[i]["symbol"],
+                "ctm": f"{timestamp}",
+                "ctmfmt": fmt_time
             }
             # tickets["ticket"] = return_pre_data
             return_data.append(return_pre_data)
@@ -211,19 +219,19 @@ $ticket['ask'] = $symbol['B1'];
 
 
 def fetch_all_ticket_data(ks):
-    try:
+    # try:
         all_tickets = get_all_ticket()
         # 使用KlineService存储K线信息
         for ticket in all_tickets:
-            try:
+            # try:
                 # , prex='tf_futures_trade'
                 ks.save_ticket(ticket=ticket, prex="tf_futures_trade")
 
-            except Exception as e:
-                print(f"保存ticket 数据失败: {e}")
+            # except Exception as e:
+            #     print(f"保存ticket 数据失败: {e}")
         print(f"所有ticket 数据已保存")
-    except Exception as e:
-        print(f"保存ticket 数据失败: {e}")
+    # except Exception as e:
+    #     print(f"保存ticket 数据失败: {e}")
 
 
 def save_kline_data_by_redis(kline_type=1, prex='tf_futures_trade', ks=None):
