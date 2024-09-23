@@ -218,6 +218,7 @@ $ticket['ask'] = $symbol['B1'];
                                     $tmpModelList[$symbol['FS']]['ticekt'] = $ticket;"""
 
 
+
 def fetch_all_ticket_data(ks):
     try:
         all_tickets = get_all_ticket()
