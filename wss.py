@@ -17,7 +17,7 @@ def get_all_futures():
 
 def get_tickets(code=None):
     ks = KlineService()
-    tikcets = ks.load_ticket(code)
+    tikcets = ks.load_ticket(code,prex="tf_futures_trade")
     return tikcets
 
 
