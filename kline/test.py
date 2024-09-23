@@ -1,5 +1,6 @@
 import json
 import os
+import re
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import timedelta, datetime
@@ -8,6 +9,51 @@ from decimal import Decimal
 import requests
 
 from kliner import KlineService
+
+def get_kline_by_minutes(symbol, minutes):
+    if minutes not in "1,10,15,30,45,60":
+        return {"error":"仅支持分钟1,10,15,30,45,60"}
+    headers = {
+        "Accept": "*/*",
+        "Accept-Language": "zh-CN,zh;q=0.9",
+        "Cache-Control": "no-cache",
+        "Connection": "keep-alive",
+        "Pragma": "no-cache",
+        "Referer": f"https://finance.sina.com.cn/futures/quotes/{symbol}.shtml",
+        "Sec-Fetch-Dest": "script",
+        "Sec-Fetch-Mode": "no-cors",
+        "Sec-Fetch-Site": "same-site",
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36",
+        "sec-ch-ua": "\"Chromium\";v=\"128\", \"Not;A=Brand\";v=\"24\", \"Google Chrome\";v=\"128\"",
+        "sec-ch-ua-mobile": "?0",
+        "sec-ch-ua-platform": "\"Windows\""
+    }
+    url = f"https://stock2.finance.sina.com.cn/futures/api/jsonp.php/var%20_{symbol}_{minutes}_{time.time() * 1000}=/InnerFuturesNewService.getFewMinLine"
+    params = {
+        "symbol": symbol,
+        "type": minutes
+    }
+    response = requests.get(url, headers=headers, params=params)
+    try:
+        unclean_data = re.findall("\((.*)\)", response.text)[0]
+        return_data = []
+        for item in json.loads(unclean_data):
+            date_time_obj = datetime.strptime(item["d"], '%Y-%m-%d %H:%M:%S')
+            # 将datetime对象转换为十位数时间戳
+            timestamp = int(date_time_obj.timestamp())
+            return_data.append({
+                "open": float(item["o"]),
+                "close": item["c"],
+                "high": item["h"],
+                "low": item["l"],
+                "ctm": str(timestamp),
+                'ctmfmt': datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M:%S'),
+                "volume": item["v"],
+                'wave': 0
+            })
+        return return_data
+    except:
+        return None
 
 
 # 获取所有期货的名称
@@ -22,10 +68,12 @@ def get_all_futures():
 
 
 # 获取单个期货的K线信息并存储
-def fetch_single_kline_data(future_code, ks):
+def fetch_single_kline_data(kline_type,future_code, ks):
+    if kline_type not in "1,10,15,30,45,60":
+        return {"error":"仅支持分钟1,10,15,30,45,60"}
     try:
         # 获取该期货的1分钟K线信息
-        kline_info = requests.get(f'http://127.0.0.1:5626/future/kline_1m/{future_code}').json()
+        kline_info = get_kline_by_minutes(symbol=future_code, minutes=kline_type)
         # 使用KlineService存储K线信息
         ks.save_klines(klines=kline_info, prex='tf_futures_trade', cycle=1, code=future_code)
         print(f"{future_code} 数据已保存")
@@ -234,16 +282,23 @@ def fetch_all_ticket_data(ks):
         print(f"保存ticket 数据失败: {e}")
 
 
-def save_kline_data_by_redis(kline_type=1, prex='tf_futures_trade', ks=None):
+def save_kline_data_by_redis(prex='tf_futures_trade', ks=None):
     keys = ks.match_search_keys()
     for key in keys:
+        print(key)
         try:
-            fetch_single_kline_data(future_code=key.split("_")[2], ks=ks)
+            kline_type = key.split("_")[3]
+        except:
+            return {"error":"该redis数据的键名不符合规范"}
+        try:
+            future_code = key.split("_")[2]
+
+            fetch_single_kline_data(kline_type=kline_type,future_code=future_code, ks=ks)
+
         except Exception as e:
             print(f"保存kline 数据失败: {e}")
         print(f"保存kline 数据成功")
         time.sleep(1)
-    pass
 
 def write_ready_data(ks):
 
@@ -10488,19 +10543,14 @@ def write_ready_data(ks):
 
 if __name__ == '__main__':
     ks = KlineService()
+    # print(get_all_ticket())
     try:
         while True:
-            keys = ks.match_search_keys()
-            for key in keys:
-                try:
-                    fetch_single_kline_data(future_code=key.split("_")[2], ks=ks)
-                except Exception as e:
-                    print(f"保存kline 数据失败: {e}")
-                print(f"保存kline 数据成功")
-                time.sleep(1)
+            save_kline_data_by_redis(prex='tf_futures_trade', ks=ks)
             fetch_all_ticket_data(ks)
             time.sleep(1)
             print("正在更新数据...", time.time())
+            # 设置更新间隔，这里是1秒
         # write_ready_data(ks)
         # print("初始数据写入完成")
     except KeyboardInterrupt:
