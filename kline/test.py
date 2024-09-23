@@ -228,7 +228,7 @@ if __name__ == '__main__':
     # print(get_all_ticket())
     try:
         while True:
-            fetch_single_kline_data(future_code="PR2507", ks=ks)
+            # fetch_single_kline_data(future_code="PR2507", ks=ks)
             fetch_all_ticket_data(ks)
             time.sleep(1)
             print("正在更新数据...", time.time())
